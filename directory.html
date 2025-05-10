@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Телефонний довідник</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+      <div class="container">
+        <a class="navbar-brand" href="directory.html">Телефонний довідник</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="register.html">Реєстрація</a></li>
+            <li class="nav-item"><a class="nav-link" href="login.html">Вхід</a></li>
+            <li class="nav-item"><a class="nav-link" href="profile.html">Профіль</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">Про додаток</a></li>
+            <li class="nav-item"><a class="nav-link active" href="directory.html">Довідник</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container my-5 flex-grow-1">
+    <h1 class="mb-4 text-center">Телефонний довідник</h1>
+    
+    <div class="mb-4 text-center">
+      <button class="btn btn-success" onclick="showAddForm()">Додати абонента</button>
+    </div>
+
+    <div id="addForm" class="mb-4 d-none">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <input type="text" id="newName" class="form-control" placeholder="Ім’я">
+        </div>
+        <div class="col-md-4">
+          <input type="tel" id="newPhone" class="form-control" placeholder="Телефон">
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-primary w-100" onclick="addContact()">Зберегти</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" id="directoryAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingA">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA">
+            A
+          </button>
+        </h2>
+        <div id="collapseA" class="accordion-collapse collapse show" data-bs-parent="#directoryAccordion">
+          <div class="accordion-body">
+            <ul class="list-group" id="groupA">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span><strong class="name">Андрій</strong></span>
+                <span>
+                  <span class="phone">+380123456789</span>
+                  <button class="btn btn-sm btn-primary ms-2" onclick="editContact(this)">Редагувати</button>
+                  <button class="btn btn-sm btn-danger ms-1" onclick="deleteContact(this)">Видалити</button>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-light">
+    <div class="container text-center">
+      <p class="mb-0">© 2025 Телефонний довідник. Всі права захищені.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function showAddForm() {
+      document.getElementById("addForm").classList.toggle("d-none");
+    }
+
+    function addContact() {
+      const name = document.getElementById("newName").value.trim();
+      const phone = document.getElementById("newPhone").value.trim();
+
+      if (!name || !phone) {
+        alert("Заповніть обидва поля");
+        return;
+      }
+
+      const firstLetter = name.charAt(0).toUpperCase();
+      const groupId = 'group' + firstLetter;
+
+      let group = document.getElementById(groupId);
+      if (!group) {
+        const accordion = document.getElementById("directoryAccordion");
+        const itemId = 'collapse' + firstLetter;
+        const headingId = 'heading' + firstLetter;
+
+        const newItem = document.createElement("div");
+        newItem.classList.add("accordion-item");
+        newItem.innerHTML = `
+          <h2 class="accordion-header" id="${headingId}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${itemId}">
+              ${firstLetter}
+            </button>
+          </h2>
+          <div id="${itemId}" class="accordion-collapse collapse" data-bs-parent="#directoryAccordion">
+            <div class="accordion-body">
+              <ul class="list-group" id="${groupId}"></ul>
+            </div>
+          </div>`;
+        accordion.appendChild(newItem);
+        group = document.getElementById(groupId);
+      }
+
+      const li = document.createElement("li");
+      li.className = "list-group-item d-flex justify-content-between align-items-center";
+      li.innerHTML = `
+        <span><strong class="name">${name}</strong></span>
+        <span>
+          <span class="phone">${phone}</span>
+          <button class="btn btn-sm btn-primary ms-2" onclick="editContact(this)">Редагувати</button>
+          <button class="btn btn-sm btn-danger ms-1" onclick="deleteContact(this)">Видалити</button>
+        </span>
+      `;
+      group.appendChild(li);
+
+      console.log("Додано абонента:", { name, phone });
+
+      document.getElementById("newName").value = "";
+      document.getElementById("newPhone").value = "";
+    }
+
+    function deleteContact(button) {
+      const li = button.closest("li");
+      const name = li.querySelector(".name").textContent;
+      const phone = li.querySelector(".phone").textContent;
+
+      if (confirm(`Видалити ${name}?`)) {
+        li.remove();
+        console.log("Видалено абонента:", { name, phone });
+      }
+    }
+
+    function editContact(button) {
+      const li = button.closest("li");
+      const nameSpan = li.querySelector(".name");
+      const phoneSpan = li.querySelector(".phone");
+
+      const currentName = nameSpan.textContent;
+      const currentPhone = phoneSpan.textContent;
+
+      const newName = prompt("Нове ім'я:", currentName);
+      const newPhone = prompt("Новий номер:", currentPhone);
+
+      if (newName && newPhone) {
+        nameSpan.textContent = newName;
+        phoneSpan.textContent = newPhone;
+        console.log("Редаговано абонента:", { oldName: currentName, oldPhone: currentPhone, newName, newPhone });
+      }
+    }
+  </script>
+</body>
+</html>
