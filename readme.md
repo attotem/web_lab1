@@ -19,4 +19,4 @@
 
 ## Звіт
 
-[Документ звіту на Google Drive](https://docs.google.com/document/d/1joRBHG3swT3cTMnBchPz7NF5jy3o1GxVqkc1Vk7P34o/edit?tab=t.0)
+[Документ звіту на Google Drive](https://docs.google.com/document/d/14oxHd5TMAD8mCFldKoZcfYcCmQ3Zno0LGpLhJFU7n-o/edit?tab=t.0)
